@@ -1,1 +1,1 @@
-include ':aacpecsapp'
+include 'intellitalk'
