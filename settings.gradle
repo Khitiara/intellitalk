@@ -1,1 +1,1 @@
-include 'intellitalk'
+include ':intellitalk', ':libraries:twoway-view:library', ':libraries:two-way-gridview:lib'

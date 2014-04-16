@@ -1,0 +1,6 @@
+[submodule "libraries/two-way-gridview"]
+	path = libraries/two-way-gridview
+	url = https://github.com/xp-vit/two-way-gridview.git
+[submodule "libraries/twoway-view"]
+	path = libraries/twoway-view
+	url = https://github.com/lucasr/twoway-view.git
