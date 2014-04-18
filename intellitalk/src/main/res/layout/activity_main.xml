@@ -18,20 +18,21 @@
             class="org.lucasr.twowayview.TwoWayView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/imageButton"
+            android:layout_alignBottom="@id/playButton"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_alignTop="@+id/imageButton"
-            android:layout_toLeftOf="@+id/imageButton" />
+            android:layout_alignTop="@id/playButton"
+            android:layout_toLeftOf="@id/playButton" />
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@id/playButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="false"
             android:layout_alignParentLeft="false"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true" />
+            android:layout_alignParentTop="true"
+            android:onClick="play" />
     </RelativeLayout>
 
     <view
