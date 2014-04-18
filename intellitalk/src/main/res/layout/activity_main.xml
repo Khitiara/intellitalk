@@ -2,52 +2,72 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@id/wordQueue"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true" />
-
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@id/commonPhraseView"
-        android:layout_below="@id/wordQueue"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true" />
-
-    <GridView
-        android:layout_width="wrap_content"
-        android:layout_height="791dp"
-        android:id="@id/categoryView"
-        tools:listitem="@android:layout/simple_list_item_1"
-        android:layout_above="@id/controls"
-        android:layout_below="@id/commonPhraseView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true" />
-
     <RelativeLayout
+        android:id="@id/queueBar"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@id/controls"
-        android:minHeight="20dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true">
+        android:layout_height="wrap_content">
 
-        <SearchView
+        <view
+            android:id="@id/wordQueue"
+            style="@style/TwoWay"
+            class="org.lucasr.twowayview.TwoWayView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/searchView"
+            android:layout_alignBottom="@+id/imageButton"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
+            android:layout_alignTop="@+id/imageButton"
+            android:layout_toLeftOf="@+id/imageButton" />
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true" />
+    </RelativeLayout>
+
+    <view
+        android:id="@id/commonPhraseView"
+        style="@style/TwoWay"
+        class="org.lucasr.twowayview.TwoWayView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/categoryView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/queueBar" />
+
+    <view
+        android:id="@id/categoryView"
+        class="com.jess.ui.TwoWayGridView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/controls" />
+
+    <RelativeLayout
+        android:id="@id/controls"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:minHeight="20dp">
+
+        <SearchView
+            android:id="@+id/searchView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
             android:inputType="textNoSuggestions" />
     </RelativeLayout>
 

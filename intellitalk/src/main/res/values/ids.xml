@@ -1,2 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources><item name="wordQueue" type="id"/><item name="commonPhraseView" type="id"/><item name="categoryView" type="id"/><item name="controls" type="id"/><item name="searchBox" type="id"/></resources>
+<resources>
+    <item name="wordQueue" type="id" />
+    <item name="commonPhraseView" type="id" />
+    <item name="categoryView" type="id" />
+    <item name="controls" type="id" />
+    <item name="searchBox" type="id" />
+    <item name="queueBar" type="id" />
+</resources>
