@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.jess.ui.TwoWayAdapterView;
 
 import org.lucasr.twowayview.TwoWayView;
 
@@ -161,6 +162,35 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
                     Toast.makeText(MainActivity.this, "Text to speech error! Please try again.", Toast.LENGTH_LONG).show();
                 }
             });
+        }
+    }
+
+    class CommonWordListItemClickListener extends BaseAdapter implements TwoWayAdapterView.OnItemClickListener {
+
+
+        @Override
+        public void onItemClick(TwoWayAdapterView<?> parent, View view, int position, long id) {
+
+        }
+
+        @Override
+        public int getCount() {
+            return 0;
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            return null;
         }
     }
 }
