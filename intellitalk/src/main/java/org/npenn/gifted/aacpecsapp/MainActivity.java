@@ -29,6 +29,7 @@ import java.util.Locale;
 
 public class MainActivity extends BaseActivity implements TextToSpeech.OnInitListener {
 
+    static final String dataTemplateUrl = "https://raw.github.com/robotbrain/intellitalk/master/datatemplate.json";
     TextToSpeech textToSpeech;
     ImageButton playButton;
     QueueAdapter queueAdapter;
