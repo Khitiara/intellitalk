@@ -40,7 +40,7 @@ public class ContentLoader {
             content.commonWords.add(phraseWord);
         }
 
-        parseCategoriesEntry(json.getAsJsonArray("categories"));
+        parseCategories(json.getAsJsonArray("categories"));
     }
 
     private Bitmap getBitmap(JsonObject jsonObject) {
@@ -49,7 +49,7 @@ public class ContentLoader {
         return BitmapFactory.decodeByteArray(imageRaw, 0, imageRaw.length, options);
     }
 
-    private void parseCategoriesEntry(JsonArray rootCategories) {
+    private void parseCategories(JsonArray rootCategories) {
         Queue<CategoryParseHelper> helpers = Queues.newSynchronousQueue();
         helpers.add(new CategoryParseHelper(null, rootCategories));
         while (!helpers.isEmpty()) {
