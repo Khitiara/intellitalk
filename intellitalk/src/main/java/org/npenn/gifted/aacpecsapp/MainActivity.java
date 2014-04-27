@@ -21,6 +21,8 @@ import com.jess.ui.TwoWayAdapterView;
 
 import org.lucasr.twowayview.TwoWayView;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -31,11 +33,33 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
     ImageButton playButton;
     QueueAdapter queueAdapter;
     List<Word> queue = Lists.newArrayList();
+    ContentLoader contentLoader = new ContentLoader();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        {
+            File data = new File(this.getFilesDir(), "data.json");
+            if (!data.exists()) {
+                //Todo: download base file
+                //Todo: host base file (derp)
+            } else if (!data.isFile()) {
+                Toast.makeText(this, "Error loading content! This means your install may be corrupted!\nDetails: the data file is a directory or system file.", Toast.LENGTH_LONG).show();
+                return;
+            } else {
+                //Todo: check if file is up-to-date
+            }
+        }
+
+        try {
+            contentLoader.load(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error loading content! This means your install may be corrupted!\nDetails: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            return;
+        }
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         queueAdapter = new QueueAdapter(this);
         ((TwoWayView) findViewById(R.id.wordQueue)).setAdapter(queueAdapter);
