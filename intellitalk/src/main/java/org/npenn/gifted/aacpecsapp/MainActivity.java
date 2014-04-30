@@ -69,6 +69,10 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
         } else {
             try {
                 ContentLoader.INSTANCE.load(MainActivity.this);
+
+                TwoWayView commonPhraseView = (TwoWayView) findViewById(R.id.commonPhraseView);
+                commonPhraseView.setOnItemClickListener(new CommonWordListItemClickListener());
+                commonPhraseView.setAdapter(new CommonPhraseAdapter(this));
             } catch (IOException e) {
                 Log.e("loading", "Error loading data", e);
                 Toast.makeText(MainActivity.this, "Error loading data!", Toast.LENGTH_LONG).show();
@@ -81,10 +85,6 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
         playButton = (ImageButton) findViewById(R.id.playButton);
         playButton.setEnabled(false);
         textToSpeech = new TextToSpeech(this, this);
-
-        TwoWayView commonPhraseView = (TwoWayView) findViewById(R.id.commonPhraseView);
-        commonPhraseView.setOnItemClickListener(new CommonWordListItemClickListener());
-        commonPhraseView.setAdapter(new CommonPhraseAdapter(this));
     }
 
     @Override
@@ -218,8 +218,13 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
 
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            Word w = (Word) adapterView.getItemAtPosition(i);
-            MainActivity.this.queue.add(w);
+            final Word w = (Word) adapterView.getItemAtPosition(i);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    MainActivity.this.queue.add(w);
+                }
+            });
         }
     }
 
@@ -321,6 +326,11 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
             }
             try {
                 ContentLoader.INSTANCE.load(MainActivity.this);
+
+
+                TwoWayView commonPhraseView = (TwoWayView) findViewById(R.id.commonPhraseView);
+                commonPhraseView.setOnItemClickListener(new CommonWordListItemClickListener());
+                commonPhraseView.setAdapter(new CommonPhraseAdapter(MainActivity.this));
             } catch (IOException e) {
                 Log.e("loading", "Error loading data", e);
                 Toast.makeText(MainActivity.this, "Error loading data!", Toast.LENGTH_LONG).show();

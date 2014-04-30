@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.util.Base64;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Queues;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -16,7 +15,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.Queue;
 
 public class ContentLoader {
     public static ContentLoader INSTANCE = new ContentLoader();
@@ -53,21 +51,21 @@ public class ContentLoader {
     }
 
     private void parseCategories(JsonArray rootCategories) {
-        Queue<CategoryParseHelper> helpers = Queues.newSynchronousQueue();
+        List<CategoryParseHelper> helpers = Lists.newArrayList();
         helpers.add(new CategoryParseHelper(null, rootCategories));
         while (!helpers.isEmpty()) {
-            CategoryParseHelper helper = helpers.remove();
+            CategoryParseHelper helper = helpers.remove(0);
             for (JsonElement categoryRaw : helper.content) {
                 JsonObject categoryObject = categoryRaw.getAsJsonObject();
                 String name = categoryObject.get("name").getAsString();
-                Bitmap image = getBitmap(categoryObject);
-                JsonArray words = categoryObject.getAsJsonArray("content");
+                Bitmap image = categoryObject.has("image") ? getBitmap(categoryObject) : null;
+                JsonArray words = categoryObject.getAsJsonArray("contents");
                 List<Word> content = Lists.newArrayList();
                 for (JsonElement wordRaw : words) {
                     JsonObject wordObject = wordRaw.getAsJsonObject();
                     String displayText = wordObject.get("display_text").getAsString();
                     String spokenText = wordObject.get("spoken_text").getAsString();
-                    Bitmap wordImage = getBitmap(wordObject);
+                    Bitmap wordImage = wordObject.has("image") ? getBitmap(wordObject) : null;
                     Word word = new Word(displayText, spokenText, wordImage);
                     content.add(word);
                 }
