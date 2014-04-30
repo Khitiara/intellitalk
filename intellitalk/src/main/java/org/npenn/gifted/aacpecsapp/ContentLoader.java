@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Queue;
 
 public class ContentLoader {
+    public static ContentLoader INSTANCE = new ContentLoader();
     public IntellitalkContent content;
     private BitmapFactory.Options options = new BitmapFactory.Options();
 
@@ -35,7 +36,7 @@ public class ContentLoader {
             JsonObject phraseObject = phrase.getAsJsonObject();
             String displayText = phraseObject.get("display_text").getAsString();
             String spokenText = phraseObject.get("spoken_text").getAsString();
-            Bitmap image = getBitmap(phraseObject);
+            Bitmap image = phraseObject.has("image") ? getBitmap(phraseObject) : null;
             Word phraseWord = new Word(displayText, spokenText, image);
             content.commonWords.add(phraseWord);
         }
@@ -45,6 +46,9 @@ public class ContentLoader {
 
     private Bitmap getBitmap(JsonObject jsonObject) {
         String imageBase64 = jsonObject.get("image").getAsString();
+        if (imageBase64.isEmpty()) {
+            return null;
+        }
         byte[] imageRaw = Base64.decode(imageBase64, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(imageRaw, 0, imageRaw.length, options);
     }

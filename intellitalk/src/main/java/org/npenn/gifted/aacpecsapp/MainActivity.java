@@ -38,7 +38,6 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
     ImageButton playButton;
     QueueAdapter queueAdapter;
     List<Word> queue = Lists.newArrayList();
-    ContentLoader contentLoader = new ContentLoader();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +64,7 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
         }
 
         try {
-            contentLoader.load(this);
+            ContentLoader.INSTANCE.load(this);
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(this, "Error loading content! This means your install may be corrupted!\nDetails: " + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -78,7 +77,9 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
         playButton.setEnabled(false);
         textToSpeech = new TextToSpeech(this, this);
 
-        ((TwoWayView) findViewById(R.id.commonPhraseView)).setOnItemClickListener(new CommonWordListItemClickListener());
+        TwoWayView commonPhraseView = (TwoWayView) findViewById(R.id.commonPhraseView);
+        commonPhraseView.setOnItemClickListener(new CommonWordListItemClickListener());
+        commonPhraseView.setAdapter(new CommonPhraseAdapter(this));
     }
 
     @Override
@@ -161,7 +162,7 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             if (view == null) {
-                view = activity.getLayoutInflater().inflate(R.layout.queue_item, null);
+                view = activity.getLayoutInflater().inflate(R.layout.word_layout, null);
             }
             Word w = activity.queue.get(i);
             if (w.image != null) {
@@ -185,7 +186,7 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
                 @Override
                 public void run() {
                     playButton.setEnabled(true);
-                    //queue.clear();
+                    queue.clear();
                 }
             });
         }
@@ -202,31 +203,12 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
         }
     }
 
-    class CommonWordListItemClickListener extends BaseAdapter implements AdapterView.OnItemClickListener {
-
-        @Override
-        public int getCount() {
-            return 0;
-        }
-
-        @Override
-        public Object getItem(int i) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            return null;
-        }
+    class CommonWordListItemClickListener implements AdapterView.OnItemClickListener {
 
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+            Word w = (Word) adapterView.getItemAtPosition(i);
+            MainActivity.this.queue.add(w);
         }
     }
 }
