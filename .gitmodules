@@ -1,6 +1,6 @@
 [submodule "libraries/two-way-gridview"]
 	path = libraries/two-way-gridview
-	url = https://github.com/xp-vit/two-way-gridview.git
+	url = git@github.com:robotbrain/two-way-gridview.git
 [submodule "libraries/twoway-view"]
 	path = libraries/twoway-view
 	url = git@github.com:robotbrain/twoway-view.git
