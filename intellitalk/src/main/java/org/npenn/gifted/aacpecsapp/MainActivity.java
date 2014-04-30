@@ -1,10 +1,15 @@
 package org.npenn.gifted.aacpecsapp;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,9 +29,10 @@ import org.lucasr.twowayview.TwoWayView;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -34,42 +40,41 @@ import java.util.Locale;
 public class MainActivity extends BaseActivity implements TextToSpeech.OnInitListener {
 
     static final String dataTemplateUrl = "https://raw.github.com/robotbrain/intellitalk/master/datatemplate.json";
+    private final Object okLock = new Object();
     TextToSpeech textToSpeech;
     ImageButton playButton;
     QueueAdapter queueAdapter;
     List<Word> queue = Lists.newArrayList();
+    ProgressDialog mProgressDialog;
+    private boolean ttsOk = false;
+    private boolean dlOk = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        {
-            File data = new File(this.getFilesDir(), "data.json");
-            if (!data.exists()) {
-                try {
-                    URL url = new URL(dataTemplateUrl);
-                    ReadableByteChannel rbc = Channels.newChannel(url.openStream());
-                    FileOutputStream fos = new FileOutputStream(data);
-                    fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(this, "Error downloading template content! Please restart the app.", Toast.LENGTH_LONG).show();
-                    return;
-                }
-            } else if (!data.isFile()) {
-                Toast.makeText(this, "Error loading content! This means your install may be corrupted!\nDetails: the data file is a directory or system file.", Toast.LENGTH_LONG).show();
-                return;
+        File dataFile = new File(this.getFilesDir(), "data.json");
+        dataFile.delete();
+        if (!dataFile.exists()) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage("Downloading initial data......");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+
+            new DataTemplateDownloadTask(this).execute(new Download(dataTemplateUrl, dataFile));
+            mProgressDialog.show();
+
+        } else {
+            try {
+                ContentLoader.INSTANCE.load(MainActivity.this);
+            } catch (IOException e) {
+                Log.e("loading", "Error loading data", e);
+                Toast.makeText(MainActivity.this, "Error loading data!", Toast.LENGTH_LONG).show();
             }
         }
 
-        try {
-            ContentLoader.INSTANCE.load(this);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Error loading content! This means your install may be corrupted!\nDetails: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            return;
-        }
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         queueAdapter = new QueueAdapter(this);
         ((TwoWayView) findViewById(R.id.wordQueue)).setAdapter(queueAdapter);
@@ -107,7 +112,13 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
     public void onInit(int i) {
         if (i == TextToSpeech.SUCCESS) {
             textToSpeech.setLanguage(Locale.US);
-            playButton.setEnabled(true);
+            synchronized (okLock) {
+                if (dlOk) {
+                    playButton.setEnabled(true);
+                } else {
+                    ttsOk = true;
+                }
+            }
             textToSpeech.setOnUtteranceProgressListener(new UtteranceListener());
             Toast.makeText(this, "Text to speech initialized properly! I can talk!", Toast.LENGTH_LONG).show();
         } else {
@@ -209,6 +220,122 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             Word w = (Word) adapterView.getItemAtPosition(i);
             MainActivity.this.queue.add(w);
+        }
+    }
+
+    public class DataTemplateDownloadTask extends AsyncTask<Download, Long, String> {
+        private Context context;
+        private PowerManager.WakeLock mWakeLock;
+        private long max;
+
+        public DataTemplateDownloadTask(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected String doInBackground(Download... downloads) {
+            Log.w("download", "its running");
+            InputStream input = null;
+            OutputStream output = null;
+            HttpURLConnection connection = null;
+            try {
+                URL url = new URL(downloads[0].url);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+
+                // expect HTTP 200 OK, so we don't mistakenly save error report
+                // instead of the file
+                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    return "Server returned HTTP " + connection.getResponseCode()
+                            + " " + connection.getResponseMessage();
+                }
+
+                // this will be useful to display download percentage
+                // might be -1: server did not report the length
+                max = connection.getContentLength();
+
+                // download the file
+                input = connection.getInputStream();
+                output = new FileOutputStream(downloads[0].outputFile);
+
+                byte data[] = new byte[4096];
+                long total = 0;
+                int count;
+                while ((count = input.read(data)) != -1) {
+                    // allow canceling with back button
+                    if (isCancelled()) {
+                        input.close();
+                        return null;
+                    }
+                    total += count;
+                    // publishing the progress....
+                    if (max > 0) // only if total length is known
+                        publishProgress(total);
+                    output.write(data, 0, count);
+                }
+            } catch (Exception e) {
+                return e.toString();
+            } finally {
+                try {
+                    if (output != null)
+                        output.close();
+                    if (input != null)
+                        input.close();
+                } catch (IOException ignored) {
+                }
+
+                if (connection != null)
+                    connection.disconnect();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // take CPU lock to prevent CPU from going off if the user
+            // presses the power button during download
+            PowerManager pm = (PowerManager) context.getSystemService(POWER_SERVICE);
+            mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                    getClass().getName());
+            mWakeLock.acquire();
+        }
+
+        @Override
+        protected void onProgressUpdate(Long... progress) {
+            super.onProgressUpdate(progress);
+            // if we get here, length is known, now set indeterminate to false
+            mProgressDialog.setIndeterminate(false);
+            mProgressDialog.setMax((int) max);
+            mProgressDialog.setProgress(progress[0].intValue());
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            mWakeLock.release();
+            mProgressDialog.dismiss();
+            if (result != null) {
+                Toast.makeText(context, "Download error: " + result, Toast.LENGTH_LONG).show();
+                Log.e("downloading", result);
+            } else {
+                Toast.makeText(context, "Done downloading", Toast.LENGTH_SHORT).show();
+            }
+            try {
+                ContentLoader.INSTANCE.load(MainActivity.this);
+            } catch (IOException e) {
+                Log.e("loading", "Error loading data", e);
+                Toast.makeText(MainActivity.this, "Error loading data!", Toast.LENGTH_LONG).show();
+            }
+        }
+
+    }
+
+    public class Download {
+        public String url;
+        public File outputFile;
+
+        public Download(String url, File outputFile) {
+            this.url = url;
+            this.outputFile = outputFile;
         }
     }
 }

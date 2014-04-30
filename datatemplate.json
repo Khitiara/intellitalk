@@ -2,7 +2,7 @@
     "common_phrases": [
         {
             "display_text": "I want...",
-            "spoken_text": "I want",
+            "spoken_text": "I want"
         }
     ],
     "categories": [
@@ -12,15 +12,15 @@
             "contents": [
                 {
                     "display_text": "Home",
-                    "spoken_text": "home",
+                    "spoken_text": "home"
                 },
                 {
                     "display_text": "School",
-                    "spoken_text": "school",
+                    "spoken_text": "school"
                 },
                 {    
                     "display_text": "Outside",
-                    "spoken_text": "outside",
+                    "spoken_text": "outside"
                 }
             ]
         },
@@ -30,11 +30,11 @@
             "contents": [
                 {
                     "display_text": "Breakfast",
-                    "spoken_text": "breakfast",
+                    "spoken_text": "breakfast"
                 },
                 {
                     "display_text": "Lunch",
-                    "spoken_text": "lunch",
+                    "spoken_text": "lunch"
                 }
             ]
         }

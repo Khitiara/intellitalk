@@ -20,7 +20,7 @@ import java.util.Queue;
 
 public class ContentLoader {
     public static ContentLoader INSTANCE = new ContentLoader();
-    public IntellitalkContent content;
+    public IntellitalkContent content = new IntellitalkContent();
     private BitmapFactory.Options options = new BitmapFactory.Options();
 
     public ContentLoader() {
@@ -30,7 +30,6 @@ public class ContentLoader {
     public void load(Context context) throws IOException {
         JsonParser parser = new JsonParser();
         JsonObject json = parser.parse(new BufferedReader(new InputStreamReader(context.openFileInput("data.json")))).getAsJsonObject();
-        content = new IntellitalkContent();
         JsonArray commonPhrases = json.getAsJsonArray("common_phrases");
         for (JsonElement phrase : commonPhrases) {
             JsonObject phraseObject = phrase.getAsJsonObject();
