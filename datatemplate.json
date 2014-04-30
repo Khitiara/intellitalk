@@ -1,3 +1,48 @@
 {
-
+    "common_phrases": [
+        {
+            "display_text": "I want...",
+            "spoken_text": "I want",
+            "image": "base64 data"
+        }
+    ],
+    "categories": [
+        {
+            "name": "Places",
+            "image_url": "",
+            "contents": [
+                {
+                    "display_text": "Home",
+                    "spoken_text": "home",
+                    "image": "base64 data"
+                },
+                {
+                    "display_text": "School",
+                    "spoken_text": "school",
+                    "image": "base64 data"
+                },
+                {    
+                    "display_text": "Outside",
+                    "spoken_text": "outside",
+                    "image": "base64 data"
+                }
+            ]
+        },
+        {
+            "name": "Food",
+            "image_url": "",
+            "contents": [
+                {
+                    "display_text": "Breakfast",
+                    "spoken_text": "breakfast",
+                    "image": "base64 data"
+                },
+                {
+                    "display_text": "Lunch",
+                    "spoken_text": "lunch",
+                    "image": "base64 data"
+                }
+            ]
+        }
+    ]
 }

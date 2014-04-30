@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -17,12 +18,15 @@ import android.widget.Toast;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.jess.ui.TwoWayAdapterView;
 
 import org.lucasr.twowayview.TwoWayView;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -44,13 +48,19 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
         {
             File data = new File(this.getFilesDir(), "data.json");
             if (!data.exists()) {
-                //Todo: download base file
-                //Todo: host base file (derp)
+                try {
+                    URL url = new URL(dataTemplateUrl);
+                    ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+                    FileOutputStream fos = new FileOutputStream(data);
+                    fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Error downloading template content! Please restart the app.", Toast.LENGTH_LONG).show();
+                    return;
+                }
             } else if (!data.isFile()) {
                 Toast.makeText(this, "Error loading content! This means your install may be corrupted!\nDetails: the data file is a directory or system file.", Toast.LENGTH_LONG).show();
                 return;
-            } else {
-                //Todo: check if file is up-to-date
             }
         }
 
@@ -67,6 +77,8 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
         playButton = (ImageButton) findViewById(R.id.playButton);
         playButton.setEnabled(false);
         textToSpeech = new TextToSpeech(this, this);
+
+        ((TwoWayView) findViewById(R.id.commonPhraseView)).setOnItemClickListener(new CommonWordListItemClickListener());
     }
 
     @Override
@@ -190,13 +202,7 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
         }
     }
 
-    class CommonWordListItemClickListener extends BaseAdapter implements TwoWayAdapterView.OnItemClickListener {
-
-
-        @Override
-        public void onItemClick(TwoWayAdapterView<?> parent, View view, int position, long id) {
-
-        }
+    class CommonWordListItemClickListener extends BaseAdapter implements AdapterView.OnItemClickListener {
 
         @Override
         public int getCount() {
@@ -216,6 +222,11 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             return null;
+        }
+
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
         }
     }
 }

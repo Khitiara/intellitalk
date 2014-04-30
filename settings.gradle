@@ -1,1 +1,2 @@
 include ':intellitalk', ':libraries:twoway-view:library', ':libraries:two-way-gridview:lib'
+rootProject.name = 'intellitalk'
