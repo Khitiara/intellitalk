@@ -7,9 +7,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class CommonPhraseAdapter extends BaseAdapter {
+class CommonPhraseAdapter extends BaseAdapter {
 
-    private Activity context;
+    private final Activity context;
 
     public CommonPhraseAdapter(Activity context) {
         this.context = context;

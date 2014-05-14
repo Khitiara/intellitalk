@@ -2,7 +2,7 @@ package org.npenn.gifted.aacpecsapp;
 
 import android.graphics.Bitmap;
 
-public class Word {
+class Word {
     public final String displayText;
     public final String spokenText;
     public final Bitmap image;

@@ -17,15 +17,16 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 public class ContentLoader {
-    public static ContentLoader INSTANCE = new ContentLoader();
+    public static final ContentLoader INSTANCE = new ContentLoader();
+    private final BitmapFactory.Options options = new BitmapFactory.Options();
     public IntellitalkContent content = new IntellitalkContent();
-    private BitmapFactory.Options options = new BitmapFactory.Options();
 
-    public ContentLoader() {
+    private ContentLoader() {
         options.inMutable = true;
     }
 
     public void load(Context context) throws IOException {
+        content = new IntellitalkContent();
         JsonParser parser = new JsonParser();
         JsonObject json = parser.parse(new BufferedReader(new InputStreamReader(context.openFileInput("data.json")))).getAsJsonObject();
         JsonArray commonPhrases = json.getAsJsonArray("common_phrases");
@@ -83,13 +84,13 @@ public class ContentLoader {
     }
 
     public class IntellitalkContent {
-        public List<Word> commonWords = Lists.newArrayList();
-        public List<WordCategory> categories = Lists.newArrayList();
+        public final List<Word> commonWords = Lists.newArrayList();
+        public final List<WordCategory> categories = Lists.newArrayList();
     }
 
     private class CategoryParseHelper {
-        WordCategory root;
-        JsonArray content;
+        final WordCategory root;
+        final JsonArray content;
 
         private CategoryParseHelper(WordCategory root, JsonArray content) {
             this.root = root;

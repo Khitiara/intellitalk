@@ -8,7 +8,6 @@
     "categories": [
         {
             "name": "Places",
-            "image_url": "",
             "contents": [
                 {
                     "display_text": "Home",
@@ -26,7 +25,6 @@
         },
         {
             "name": "Food",
-            "image_url": "",
             "contents": [
                 {
                     "display_text": "Breakfast",
