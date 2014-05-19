@@ -18,11 +18,10 @@ import java.util.List;
 
 public class ContentLoader {
     public static final ContentLoader INSTANCE = new ContentLoader();
-    private final BitmapFactory.Options options = new BitmapFactory.Options();
     public IntellitalkContent content = new IntellitalkContent();
 
     private ContentLoader() {
-        options.inMutable = true;
+
     }
 
     public void load(Context context) throws IOException {
@@ -34,7 +33,7 @@ public class ContentLoader {
             JsonObject phraseObject = phrase.getAsJsonObject();
             String displayText = phraseObject.get("display_text").getAsString();
             String spokenText = phraseObject.get("spoken_text").getAsString();
-            Bitmap image = phraseObject.has("image") ? getBitmap(phraseObject) : null;
+            Bitmap image = getBitmap(phraseObject);
             Word phraseWord = new Word(displayText, spokenText, image);
             content.commonWords.add(phraseWord);
         }
@@ -43,12 +42,15 @@ public class ContentLoader {
     }
 
     private Bitmap getBitmap(JsonObject jsonObject) {
+        if (!jsonObject.has("image")) {
+            return null;
+        }
         String imageBase64 = jsonObject.get("image").getAsString();
         if (imageBase64.isEmpty()) {
             return null;
         }
         byte[] imageRaw = Base64.decode(imageBase64, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(imageRaw, 0, imageRaw.length, options);
+        return BitmapFactory.decodeByteArray(imageRaw, 0, imageRaw.length);
     }
 
     private void parseCategories(JsonArray rootCategories) {
@@ -66,7 +68,7 @@ public class ContentLoader {
                     JsonObject wordObject = wordRaw.getAsJsonObject();
                     String displayText = wordObject.get("display_text").getAsString();
                     String spokenText = wordObject.get("spoken_text").getAsString();
-                    Bitmap wordImage = wordObject.has("image") ? getBitmap(wordObject) : null;
+                    Bitmap wordImage = getBitmap(wordObject);
                     Word word = new Word(displayText, spokenText, wordImage);
                     content.add(word);
                 }

@@ -32,7 +32,8 @@
             android:layout_alignParentLeft="false"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:onClick="play" />
+            android:onClick="play"
+            android:src="@drawable/play" />
     </RelativeLayout>
 
     <view
@@ -41,7 +42,6 @@
         class="org.lucasr.twowayview.TwoWayView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/categoryView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@id/queueBar" />
@@ -51,25 +51,7 @@
         class="com.jess.ui.TwoWayGridView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/controls" />
-
-    <RelativeLayout
-        android:id="@id/controls"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:minHeight="20dp">
-
-        <SearchView
-            android:id="@+id/searchView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:inputType="textNoSuggestions" />
-    </RelativeLayout>
+        android:layout_below="@id/commonPhraseView" />
 
 </RelativeLayout>

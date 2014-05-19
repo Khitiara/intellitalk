@@ -1,6 +1,8 @@
 package org.npenn.gifted.aacpecsapp;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,7 +11,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.google.common.io.Files;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,17 +35,13 @@ public class LoadingActivity extends BaseActivity {
         textView = (TextView) findViewById(R.id.loadingBox);
 
         File dataFile = new File(this.getFilesDir(), "data.json");
-        dataFile.delete();
-        if (!dataFile.exists()) {
-            new DataTemplateDownloadTask(this).execute(new Download(dataFile));
-        } else {
-            try {
-                ContentLoader.INSTANCE.load(LoadingActivity.this);
-            } catch (IOException e) {
-                Log.e("loading", "Error loading data", e);
-                Toast.makeText(LoadingActivity.this, "Error loading data!", Toast.LENGTH_LONG).show();
-            }
+        try {
+            Files.copy(dataFile, new File(this.getFilesDir(), "data.json.backup"));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        dataFile.delete();
+        new DataTemplateDownloadTask(this).execute(new Download(dataFile));
     }
 
 
@@ -143,7 +142,11 @@ public class LoadingActivity extends BaseActivity {
         protected void onPostExecute(String result) {
             mWakeLock.release();
             if (result != null) {
-                textView.setText("Download error! Please restart the app!");
+                try {
+                    Files.copy(new File(getFilesDir(), "data.json.backup"), new File(getFilesDir(), "data.json"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 Log.e("downloading", result);
             } else {
                 textView.setText("Loading file...");
@@ -154,7 +157,14 @@ public class LoadingActivity extends BaseActivity {
                 startActivity(intent);
             } catch (IOException e) {
                 Log.e("loading", "Error loading data", e);
-                Toast.makeText(LoadingActivity.this, "Error loading data!", Toast.LENGTH_LONG).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(LoadingActivity.this);
+                builder.setTitle("Error!").setMessage("Error loading data!\n\n" + e.getMessage()).setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                        System.exit(0);
+                    }
+                }).show();
             }
         }
 
