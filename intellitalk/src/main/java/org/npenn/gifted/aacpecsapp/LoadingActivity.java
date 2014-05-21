@@ -24,7 +24,7 @@ import java.net.URL;
 
 
 public class LoadingActivity extends BaseActivity {
-    private static final String dataTemplateUrl = "https://raw.github.com/robotbrain/intellitalk/master/datatemplate.json";
+    private static final String dataTemplateUrl = "https://raw.github.com/intellitalkdev/intellitalk/develop/datatemplate.json";
     private TextView textView;
 
     @Override
