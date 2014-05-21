@@ -38,8 +38,10 @@ class CommonPhraseAdapter extends BaseAdapter {
         Word w = ContentLoader.INSTANCE.content.commonWords.get(i);
         if (w.image != null) {
             ((ImageView) view.findViewById(R.id.item_image)).setImageBitmap(w.image);
+            ((TextView) view.findViewById(R.id.item_text)).setText("");
+        } else {
+            ((TextView) view.findViewById(R.id.item_text)).setText(w.displayText);
         }
-        ((TextView) view.findViewById(R.id.item_text)).setText(w.displayText);
         return view;
     }
 

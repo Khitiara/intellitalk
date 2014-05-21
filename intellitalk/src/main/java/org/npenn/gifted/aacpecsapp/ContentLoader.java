@@ -50,7 +50,7 @@ public class ContentLoader {
             return null;
         }
         byte[] imageRaw = Base64.decode(imageBase64, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(imageRaw, 0, imageRaw.length);
+        return Bitmap.createScaledBitmap(BitmapFactory.decodeByteArray(imageRaw, 0, imageRaw.length), 20, 20, true);
     }
 
     private void parseCategories(JsonArray rootCategories) {
@@ -61,7 +61,7 @@ public class ContentLoader {
             for (JsonElement categoryRaw : helper.content) {
                 JsonObject categoryObject = categoryRaw.getAsJsonObject();
                 String name = categoryObject.get("name").getAsString();
-                Bitmap image = categoryObject.has("image") ? getBitmap(categoryObject) : null;
+                Bitmap image = getBitmap(categoryObject);
                 JsonArray words = categoryObject.getAsJsonArray("contents");
                 List<Word> content = Lists.newArrayList();
                 for (JsonElement wordRaw : words) {

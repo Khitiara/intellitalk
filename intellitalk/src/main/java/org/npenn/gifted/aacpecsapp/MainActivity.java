@@ -141,8 +141,9 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
             Word w = activity.queue.get(i);
             if (w.image != null) {
                 ((ImageView) view.findViewById(R.id.item_image)).setImageBitmap(w.image);
+            } else {
+                ((TextView) view.findViewById(R.id.item_text)).setText(w.displayText);
             }
-            ((TextView) view.findViewById(R.id.item_text)).setText(w.displayText);
             return view;
         }
     }
