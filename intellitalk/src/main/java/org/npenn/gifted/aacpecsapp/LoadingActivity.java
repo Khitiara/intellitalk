@@ -53,7 +53,9 @@ public class LoadingActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (!isReload) {
+            super.onBackPressed();
+        }
     }
 
     @Override
