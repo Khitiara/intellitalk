@@ -18,14 +18,14 @@ import java.util.List;
 
 public class ContentLoader {
     public static final ContentLoader INSTANCE = new ContentLoader();
-    public IntellitalkContent content = new IntellitalkContent();
+    public IntellitalkContent CONTENT = new IntellitalkContent();
 
     private ContentLoader() {
 
     }
 
     public void load(Context context) throws IOException {
-        content = new IntellitalkContent();
+        CONTENT = new IntellitalkContent();
         JsonParser parser = new JsonParser();
         JsonObject json = parser.parse(new BufferedReader(new InputStreamReader(context.openFileInput("data.json")))).getAsJsonObject();
         JsonArray commonPhrases = json.getAsJsonArray("common_phrases");
@@ -35,7 +35,7 @@ public class ContentLoader {
             String spokenText = phraseObject.get("spoken_text").getAsString();
             Bitmap image = getBitmap(phraseObject);
             Word phraseWord = new Word(displayText, spokenText, image);
-            content.commonWords.add(phraseWord);
+            CONTENT.commonWords.add(phraseWord);
         }
 
         parseCategories(json.getAsJsonArray("categories"));
@@ -50,7 +50,7 @@ public class ContentLoader {
             return null;
         }
         byte[] imageRaw = Base64.decode(imageBase64, Base64.DEFAULT);
-        return Bitmap.createScaledBitmap(BitmapFactory.decodeByteArray(imageRaw, 0, imageRaw.length), 20, 20, true);
+        return BitmapFactory.decodeByteArray(imageRaw, 0, imageRaw.length);
     }
 
     private void parseCategories(JsonArray rootCategories) {
@@ -71,10 +71,11 @@ public class ContentLoader {
                     Bitmap wordImage = getBitmap(wordObject);
                     Word word = new Word(displayText, spokenText, wordImage);
                     content.add(word);
+                    CONTENT.commonWords.add(word);  //Until categories are added.
                 }
                 WordCategory category = new WordCategory(name, image, content);
                 if (helper.root == null) {
-                    this.content.categories.add(category);
+                    this.CONTENT.categories.add(category);
                 } else {
                     helper.root.nestedCategories.add(category);
                 }

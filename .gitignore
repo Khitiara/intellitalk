@@ -25,3 +25,4 @@ local.properties
 #Intellij files
 .idea/
 *.iml
+.gradletasknamecache

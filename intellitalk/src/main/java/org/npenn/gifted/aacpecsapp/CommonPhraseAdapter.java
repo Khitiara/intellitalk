@@ -17,12 +17,12 @@ class CommonPhraseAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return ContentLoader.INSTANCE.content.commonWords.size();
+        return ContentLoader.INSTANCE.CONTENT.commonWords.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return ContentLoader.INSTANCE.content.commonWords.get(i);
+        return ContentLoader.INSTANCE.CONTENT.commonWords.get(i);
     }
 
     @Override
@@ -35,15 +35,16 @@ class CommonPhraseAdapter extends BaseAdapter {
         if (view == null) {
             view = context.getLayoutInflater().inflate(R.layout.word_layout, null);
         }
-        Word w = ContentLoader.INSTANCE.content.commonWords.get(i);
+        Word w = ContentLoader.INSTANCE.CONTENT.commonWords.get(i);
         if (w.image != null) {
             ((ImageView) view.findViewById(R.id.item_image)).setImageBitmap(w.image);
-            ((TextView) view.findViewById(R.id.item_text)).setText("");
+            view.findViewById(R.id.item_image).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.item_text).setVisibility(View.INVISIBLE);
         } else {
             ((TextView) view.findViewById(R.id.item_text)).setText(w.displayText);
+            view.findViewById(R.id.item_text).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.item_image).setVisibility(View.INVISIBLE);
         }
         return view;
     }
-
-
 }
