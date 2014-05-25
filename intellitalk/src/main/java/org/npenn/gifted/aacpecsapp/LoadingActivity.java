@@ -24,12 +24,18 @@ import java.net.URL;
 
 
 public class LoadingActivity extends BaseActivity {
+    public static final String IS_RELOAD = "isreload@intellitalk";
     private static final String dataTemplateUrl = "https://raw.github.com/intellitalkdev/intellitalk/develop/datatemplate.json";
+    boolean isReload = false;
     private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState.containsKey(IS_RELOAD)) {
+            isReload = savedInstanceState.getBoolean(IS_RELOAD);
+        }
+
         setContentView(R.layout.activity_loading);
 
         textView = (TextView) findViewById(R.id.loadingBox);
@@ -40,10 +46,17 @@ public class LoadingActivity extends BaseActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        dataFile.delete();
-        new DataTemplateDownloadTask(this).execute(new Download(dataFile));
+        if (dataFile.delete()) {
+            new DataTemplateDownloadTask(this).execute(new Download(dataFile));
+        }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (!isReload) {
+            super.onBackPressed();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

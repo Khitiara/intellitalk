@@ -1,6 +1,8 @@
 package org.npenn.gifted.aacpecsapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,11 +40,12 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        manager.setMode(AudioManager.MODE_NORMAL);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         queueAdapter = new QueueAdapter(this);
         ((TwoWayView) findViewById(R.id.wordQueue)).setAdapter(queueAdapter);
-        TwoWayView commonPhraseView = (TwoWayView) findViewById(R.id.commonPhraseView);
+        GridView commonPhraseView = (GridView) findViewById(R.id.commonPhraseView);
         commonPhraseView.setAdapter(new CommonPhraseAdapter(this));
         commonPhraseView.setOnItemClickListener(new CommonWordListItemClickListener());
         playButton = (ImageButton) findViewById(R.id.playButton);
@@ -77,6 +81,7 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
             textToSpeech.setLanguage(Locale.US);
             playButton.setEnabled(true);
             textToSpeech.setOnUtteranceProgressListener(new UtteranceListener());
+            textToSpeech.setSpeechRate(.75f);
             Toast.makeText(this, "Text to speech initialized properly! I can talk!", Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(this, "Test to speech initialization error! Try restarting the app.", Toast.LENGTH_LONG).show();
@@ -90,10 +95,10 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
         //Make text now
         StringBuilder builder = new StringBuilder();
         for (Word w : queue) {
+            builder.append(w.spokenText);
             if (builder.length() != 0 && !Lists.newArrayList(".", ",", "!", "?", ";", ":").contains(w.spokenText)) {
                 builder.append(' ');
             }
-            builder.append(w.spokenText);
         }
         HashMap<String, String> params = Maps.newHashMap();
         params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "Intellitalk speech");
@@ -109,6 +114,16 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
     @Override
     public void onBackPressed() {
 
+    }
+
+    public void reload(MenuItem item) {
+        Intent intent = new Intent(this, LoadingActivity.class);
+        intent.putExtra(LoadingActivity.IS_RELOAD, true);
+        startActivity(intent);
+    }
+
+    public void clear(View view) {
+        queue.clear();
     }
 
     public static class QueueAdapter extends BaseAdapter {

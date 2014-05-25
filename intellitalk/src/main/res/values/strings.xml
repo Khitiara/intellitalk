@@ -8,5 +8,6 @@
     <string name="pref_theme">Use Dark Theme?</string>
     <string name="pref_useDarkTheme">pref_useDarkTheme</string>
     <string name="loading">Downloading…</string>
+    <string name="action_reload">Reload Words</string>
 
 </resources>
