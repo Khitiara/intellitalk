@@ -32,7 +32,8 @@ public class LoadingActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState.containsKey(IS_RELOAD)) {
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(IS_RELOAD)) {
             isReload = savedInstanceState.getBoolean(IS_RELOAD);
         }
 
@@ -46,9 +47,8 @@ public class LoadingActivity extends BaseActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (dataFile.delete()) {
-            new DataTemplateDownloadTask(this).execute(new Download(dataFile));
-        }
+        dataFile.delete();
+        new DataTemplateDownloadTask(this).execute(new Download(dataFile));
     }
 
     @Override
