@@ -1,6 +1,5 @@
 package org.npenn.gifted.aacpecsapp;
 
-import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -40,8 +39,7 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        manager.setMode(AudioManager.MODE_NORMAL);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         queueAdapter = new QueueAdapter(this);
         ((TwoWayView) findViewById(R.id.wordQueue)).setAdapter(queueAdapter);
