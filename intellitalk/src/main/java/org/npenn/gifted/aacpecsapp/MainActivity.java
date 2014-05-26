@@ -124,6 +124,7 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
 
     public void clear(View view) {
         queue.clear();
+        queueAdapter.notifyDataSetChanged();
     }
 
     public static class QueueAdapter extends BaseAdapter {
