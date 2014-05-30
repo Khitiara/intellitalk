@@ -57,7 +57,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
         android:layout_below="@id/queueBar"
-        android:columnWidth="85dp"
-        android:numColumns="auto_fit" />
+        android:numColumns="5" />
 
 </RelativeLayout>
