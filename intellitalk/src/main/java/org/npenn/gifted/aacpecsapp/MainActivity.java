@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.view.Menu;
@@ -38,7 +37,6 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         queueAdapter = new QueueAdapter(this);
         ((TwoWayView) findViewById(R.id.wordQueue)).setAdapter(queueAdapter);
         GridView commonPhraseView = (GridView) findViewById(R.id.commonPhraseView);
@@ -53,7 +51,7 @@ public class MainActivity extends Activity {
 
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -99,6 +97,7 @@ public class MainActivity extends Activity {
     public void onBackPressed() {
         IntellitalkState.INSTANCE.textToSpeech.shutdown();
         finish();
+        System.exit(0);
     }
 
     public void reload() {

@@ -1,17 +1,17 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="org.npenn.gifted.aacpecsapp.MainActivity">
-    <item xmlns:app="http://schemas.android.com/apk/res-auto"
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
         android:id="@+id/action_refresh"
         android:orderInCategory="99"
         android:title="@string/action_reload"
-        app:showAsAction="never" />
+        android:showAsAction="never" />
     <item
         android:id="@+id/action_clear"
         android:icon="@drawable/ic_action_cancel"
-        android:title="@string/action_clear" />
+        android:title="@string/action_clear"
+        android:showAsAction="ifRoom"/>
     <item
         android:id="@+id/action_play"
         android:icon="@drawable/ic_action_play"
-        android:title="@string/action_play" />
+        android:title="@string/action_play"
+        android:showAsAction="ifRoom"/>
 </menu>

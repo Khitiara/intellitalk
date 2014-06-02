@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:title="@string/title_settings">
-    <SwitchPreference
-        android:key="@string/pref_useDarkTheme"
-        android:title="@string/pref_theme"
-        android:dialogTitle="@string/pref_theme"
-        android:defaultValue="@bool/pref_theme_default" />
-</PreferenceScreen>
