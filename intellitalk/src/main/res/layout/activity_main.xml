@@ -26,7 +26,7 @@
         android:layout_alignParentRight="true"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:background="@android:color/darker_gray"
+		android:background="?android:attr/listDivider"
         android:id="@+id/seperator"/>
     <view
         android:id="@id/wordQueue"
