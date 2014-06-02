@@ -82,6 +82,7 @@ public class LoadingActivity extends Activity implements TextToSpeech.OnInitList
         if (status == TextToSpeech.SUCCESS) {
             IntellitalkState.INSTANCE.textToSpeech.setLanguage(Locale.US);
             IntellitalkState.INSTANCE.textToSpeech.setSpeechRate(.75f);
+            Log.i("loading", "Done TTS.");
             Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
             startActivity(intent);
         } else {
@@ -190,6 +191,7 @@ public class LoadingActivity extends Activity implements TextToSpeech.OnInitList
             }
             try {
                 ContentLoader.INSTANCE.load(LoadingActivity.this);
+                Log.i("loading", "Done file.");
                 textView.setText("Loading text-to-speech...");
                 IntellitalkState.INSTANCE.textToSpeech = new TextToSpeech(getApplicationContext(), LoadingActivity.this);
             } catch (IOException e) {
