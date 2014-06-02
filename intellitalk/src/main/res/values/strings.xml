@@ -2,12 +2,9 @@
 <resources>
 
     <string name="app_name">Intellitalk</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_settings">Settings</string>
-    <string name="title_settings">Settings</string>
-    <string name="pref_theme">Use Dark Theme?</string>
-    <string name="pref_useDarkTheme">pref_useDarkTheme</string>
     <string name="loading">Downloading…</string>
     <string name="action_reload">Reload Words</string>
+    <string name="action_clear">Clear</string>
+    <string name="action_play">Play</string>
 
 </resources>

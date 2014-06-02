@@ -1,5 +1,6 @@
 package org.npenn.gifted.aacpecsapp;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -13,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,14 +25,12 @@ import org.lucasr.twowayview.TwoWayView;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
-public class MainActivity extends BaseActivity implements TextToSpeech.OnInitListener {
+public class MainActivity extends Activity {
 
     private final List<Word> queue = Lists.newArrayList();
-    private TextToSpeech textToSpeech;
-    private ImageButton playButton;
     private QueueAdapter queueAdapter;
+    private boolean canPlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +44,8 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
         GridView commonPhraseView = (GridView) findViewById(R.id.commonPhraseView);
         commonPhraseView.setAdapter(new CommonPhraseAdapter(this));
         commonPhraseView.setOnItemClickListener(new CommonWordListItemClickListener());
-        playButton = (ImageButton) findViewById(R.id.playButton);
-        playButton.setEnabled(false);
-        textToSpeech = new TextToSpeech(this, this);
+        IntellitalkState.INSTANCE.textToSpeech.setOnUtteranceProgressListener(new UtteranceListener());
+        canPlay = true;
     }
 
     @Override
@@ -65,30 +62,25 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        return id == R.id.action_settings || super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("UnusedParameters")
-    public void launchSettings(MenuItem unused) {
-        startActivity(new Intent(this, SettingsActivity.class));
-    }
-
-    @Override
-    public void onInit(int i) {
-        if (i == TextToSpeech.SUCCESS) {
-            textToSpeech.setLanguage(Locale.US);
-            playButton.setEnabled(true);
-            textToSpeech.setOnUtteranceProgressListener(new UtteranceListener());
-            textToSpeech.setSpeechRate(.75f);
-            Toast.makeText(this, "Text to speech initialized properly! I can talk!", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, "Test to speech initialization error! Try restarting the app.", Toast.LENGTH_LONG).show();
+        switch (id) {
+            case R.id.action_play:
+                play();
+                return true;
+            case R.id.action_clear:
+                clear();
+                return true;
+            case R.id.action_refresh:
+                reload();
+                return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("UnusedParameters")
-    public void play(View unused) {
-        playButton.setEnabled(false);
+    public void play() {
+        if (!canPlay) {
+            Toast.makeText(this, "Text to speech not initialized!", Toast.LENGTH_LONG).show();
+        }
+        canPlay = false;
 
         //Make text now
         StringBuilder builder = new StringBuilder();
@@ -100,27 +92,22 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
         }
         HashMap<String, String> params = Maps.newHashMap();
         params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "Intellitalk speech");
-        textToSpeech.speak(builder.toString(), TextToSpeech.QUEUE_FLUSH, params);
-    }
-
-    @Override
-    protected void onDestroy() {
-        textToSpeech.shutdown();
-        super.onDestroy();
+        IntellitalkState.INSTANCE.textToSpeech.speak(builder.toString(), TextToSpeech.QUEUE_FLUSH, params);
     }
 
     @Override
     public void onBackPressed() {
-
+        IntellitalkState.INSTANCE.textToSpeech.shutdown();
+        finish();
     }
 
-    public void reload(MenuItem item) {
+    public void reload() {
         Intent intent = new Intent(this, LoadingActivity.class);
         intent.putExtra(LoadingActivity.IS_RELOAD, true);
         startActivity(intent);
     }
 
-    public void clear(View view) {
+    public void clear() {
         queue.clear();
         queueAdapter.notifyDataSetChanged();
     }
@@ -174,7 +161,7 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    playButton.setEnabled(true);
+                    canPlay = true;
                     queue.clear();
                     MainActivity.this.queueAdapter.notifyDataSetChanged();
                 }
@@ -183,11 +170,11 @@ public class MainActivity extends BaseActivity implements TextToSpeech.OnInitLis
 
         @Override
         public void onError(String s) {
-            playButton.post(new Runnable() {
+            runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    playButton.setEnabled(true);
-                    Toast.makeText(MainActivity.this, "Text to speech error! Please try again.", Toast.LENGTH_LONG).show();
+                    canPlay = true;
+                    Toast.makeText(MainActivity.this, "Speech failed!", Toast.LENGTH_LONG).show();
                 }
             });
         }

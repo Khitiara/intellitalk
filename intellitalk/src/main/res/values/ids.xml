@@ -6,7 +6,6 @@
     <item name="controls" type="id" />
     <item name="searchBox" type="id" />
     <item name="queueBar" type="id" />
-    <item name="playButtoon" type="id" />
     <item name="playButton" type="id" />
     <item name="item_image" type="id" />
     <item name="item_text" type="id" />

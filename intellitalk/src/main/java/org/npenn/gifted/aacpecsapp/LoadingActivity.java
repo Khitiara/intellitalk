@@ -1,5 +1,6 @@
 package org.npenn.gifted.aacpecsapp;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,6 +8,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,9 +23,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Locale;
 
 
-public class LoadingActivity extends BaseActivity {
+public class LoadingActivity extends Activity implements TextToSpeech.OnInitListener {
     public static final String IS_RELOAD = "isreload@intellitalk";
     private static final String dataTemplateUrl = "https://raw.github.com/intellitalkdev/intellitalk/develop/datatemplate.json";
     boolean isReload = false;
@@ -72,6 +75,27 @@ public class LoadingActivity extends BaseActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+            IntellitalkState.INSTANCE.textToSpeech.setLanguage(Locale.US);
+            IntellitalkState.INSTANCE.textToSpeech.setSpeechRate(.75f);
+            Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
+            startActivity(intent);
+        } else {
+            Log.e("loading", "Error with Text to Speech init!");
+            AlertDialog.Builder builder = new AlertDialog.Builder(LoadingActivity.this);
+            builder.setTitle("Error!").setMessage("Error loading tts!").setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                    System.exit(0);
+                }
+            }).show();
+
+        }
     }
 
     public class DataTemplateDownloadTask extends AsyncTask<Download, Long, String> {
@@ -166,8 +190,8 @@ public class LoadingActivity extends BaseActivity {
             }
             try {
                 ContentLoader.INSTANCE.load(LoadingActivity.this);
-                Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
-                startActivity(intent);
+                textView.setText("Loading text-to-speech...");
+                IntellitalkState.INSTANCE.textToSpeech = new TextToSpeech(getApplicationContext(), LoadingActivity.this);
             } catch (IOException e) {
                 Log.e("loading", "Error loading data", e);
                 AlertDialog.Builder builder = new AlertDialog.Builder(LoadingActivity.this);
