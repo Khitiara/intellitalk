@@ -97,18 +97,15 @@
             "contents": [
                 {
                     "display_text": "Red",
-                    "spoken_text": "red",
-                    "image": ""
+                    "spoken_text": "red"
                 },
                 {
                     "display_text": "Blue",
-                    "spoken_text": "blue",
-                    "image": ""
+                    "spoken_text": "blue"
                 },
                 {
                     "display_text": "Yellow",
-                    "spoken_text": "yellow",
-                    "image": ""
+                    "spoken_text": "yellow"  
                 }
             ]
         }
