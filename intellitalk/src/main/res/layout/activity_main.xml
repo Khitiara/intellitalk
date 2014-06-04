@@ -9,30 +9,31 @@
 
     <GridView
         android:id="@id/commonPhraseView"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/seperator"
-        android:numColumns="5"
         android:clipChildren="true"
+        android:numColumns="5"
         android:verticalSpacing="5dp"/>
     <View
+        android:id="@+id/seperator"
         android:layout_width="fill_parent"
         android:layout_height="2dp"
-        android:layout_below="@id/wordQueue"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:paddingTop="5dp"
+        android:layout_below="@id/wordQueue"
+        android:background="?android:attr/listDivider"
         android:paddingBottom="5dp"
-		android:background="?android:attr/listDivider"
-        android:id="@+id/seperator"/>
+        android:paddingTop="5dp" />
+
     <view
         android:id="@id/wordQueue"
         style="@style/TwoWay"
         class="org.lucasr.twowayview.TwoWayView"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="82.5dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"

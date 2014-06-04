@@ -6,5 +6,6 @@
     <string name="action_reload">Reload Words</string>
     <string name="action_clear">Clear</string>
     <string name="action_play">Play</string>
+    <string name="image_desc">Image for thing</string>
 
 </resources>
