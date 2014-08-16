@@ -1,2 +1,2 @@
-include ':intellitalk', ':libraries:twoway-view', ':libraries:twoway-view:library'
+include ':intellitalk', ':twoway-view'
 rootProject.name = 'intellitalk'

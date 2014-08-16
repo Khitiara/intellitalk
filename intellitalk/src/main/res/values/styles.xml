@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="TwoWay">
+    <style name="Horiz">
         <item name="android:orientation">horizontal</item>
     </style>
 </resources>

@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <GridView
+
+    <org.lucasr.twowayview.TwoWayView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@id/commonPhraseView"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/seperator"
-        android:clipChildren="true"
-        android:numColumns="5"
-        android:verticalSpacing="5dp"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutManager="GridLayoutManager"
+        app:numColumns="3"
+        app:numRows="3" />
+
     <View
         android:id="@+id/seperator"
         android:layout_width="fill_parent"
@@ -29,15 +30,15 @@
         android:paddingBottom="5dp"
         android:paddingTop="5dp" />
 
-    <view
+    <org.lucasr.twowayview.TwoWayView
         android:id="@id/wordQueue"
-        style="@style/TwoWay"
-        class="org.lucasr.twowayview.TwoWayView"
+        style="@style/Horiz"
         android:layout_width="fill_parent"
         android:layout_height="82.5dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:horizontalSpacing="5dp"/>
+        android:horizontalSpacing="5dp"
+        app:layoutManager="ListLayoutManager" />
 
 </RelativeLayout>
