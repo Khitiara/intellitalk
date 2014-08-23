@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,18 +8,18 @@
     tools:context=".MainActivity">
 
 
-    <org.lucasr.twowayview.TwoWayView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <GridView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@id/commonPhraseView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="GridLayoutManager"
-        app:numColumns="3"
-        app:numRows="3" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/seperator"
+        android:numColumns="5" />
 
     <View
-        android:id="@+id/seperator"
+        android:id="@id/seperator"
         android:layout_width="fill_parent"
         android:layout_height="2dp"
         android:layout_alignParentLeft="true"
@@ -38,7 +37,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:horizontalSpacing="5dp"
-        app:layoutManager="ListLayoutManager" />
+        android:horizontalSpacing="5dp" />
 
 </RelativeLayout>

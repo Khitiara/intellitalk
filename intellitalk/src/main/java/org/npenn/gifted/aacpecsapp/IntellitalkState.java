@@ -5,6 +5,7 @@ import android.speech.tts.TextToSpeech;
 public class IntellitalkState {
     public static final IntellitalkState INSTANCE = new IntellitalkState();
     public TextToSpeech textToSpeech;
+    public ContentLoader.IntellitalkContent data;
 
     private IntellitalkState() {
 

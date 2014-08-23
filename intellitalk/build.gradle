@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 'android-L'
+    compileSdkVersion 20
     buildToolsVersion '20.0.0'
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 20
-        versionCode 1
-        versionName '1.0'
+        versionCode 2
+        versionName '1.1'
     }
     signingConfigs {
         release {
@@ -29,9 +29,8 @@ android {
 }
 
 dependencies {
-    compile group: 'com.google.guava', name: 'guava', version: '12.0'
-    compile group: 'com.google.code.gson', name: 'gson', version: '2.2.4'
-    compile project(':twoway-view:core')
-    compile project(':twoway-view:layouts')
+    compile 'com.google.guava:guava:17.0'
+    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'org.lucasr.twowayview:twowayview:0.1.1'
     compile 'com.android.support:support-v4:20.0.0'
 }

@@ -9,12 +9,8 @@ import android.speech.tts.UtteranceProgressListener;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.common.collect.Lists;
@@ -38,7 +34,8 @@ public class MainActivity extends Activity {
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         queueAdapter = new QueueAdapter(this);
-        ((TwoWayView) findViewById(R.id.wordQueue)).setAdapter(queueAdapter);
+        TwoWayView wordQueue = (TwoWayView) findViewById(R.id.wordQueue);
+        wordQueue.setAdapter(queueAdapter);
         GridView commonPhraseView = (GridView) findViewById(R.id.commonPhraseView);
         commonPhraseView.setAdapter(new CommonPhraseAdapter(this));
         commonPhraseView.setOnItemClickListener(new CommonWordListItemClickListener());
@@ -102,7 +99,6 @@ public class MainActivity extends Activity {
 
     public void reload() {
         Intent intent = new Intent(this, LoadingActivity.class);
-        intent.putExtra(LoadingActivity.IS_RELOAD, true);
         startActivity(intent);
     }
 
@@ -111,41 +107,8 @@ public class MainActivity extends Activity {
         queueAdapter.notifyDataSetChanged();
     }
 
-    public static class QueueAdapter extends BaseAdapter {
-        final MainActivity activity;
-
-        public QueueAdapter(MainActivity activity) {
-            this.activity = activity;
-        }
-
-        @Override
-        public int getCount() {
-            return activity.queue.size();
-        }
-
-        @Override
-        public Object getItem(int i) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            if (view == null) {
-                view = activity.getLayoutInflater().inflate(R.layout.word_layout, null);
-            }
-            Word w = activity.queue.get(i);
-            if (w.image != null) {
-                ((ImageView) view.findViewById(R.id.item_image)).setImageBitmap(w.image);
-            } else {
-                ((TextView) view.findViewById(R.id.item_text)).setText(w.displayText);
-            }
-            return view;
-        }
+    public List<Word> getQueue() {
+        return queue;
     }
 
     private class UtteranceListener extends UtteranceProgressListener {
@@ -180,10 +143,9 @@ public class MainActivity extends Activity {
     }
 
     private class CommonWordListItemClickListener implements AdapterView.OnItemClickListener {
-
         @Override
-        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            final Word w = (Word) adapterView.getItemAtPosition(i);
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            final Word w = (Word) parent.getAdapter().getItem(position);
             MainActivity.this.queue.add(w);
             MainActivity.this.queueAdapter.notifyDataSetChanged();
         }

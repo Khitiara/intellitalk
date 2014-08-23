@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Intellitalk</string>
-    <string name="loading">Downloading…</string>
+    <string name="loading">Loading…</string>
     <string name="action_reload">Reload Words</string>
     <string name="action_clear">Clear</string>
     <string name="action_play">Play</string>
