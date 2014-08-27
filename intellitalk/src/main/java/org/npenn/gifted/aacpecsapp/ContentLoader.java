@@ -2,15 +2,19 @@ package org.npenn.gifted.aacpecsapp;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
@@ -138,6 +142,7 @@ public class ContentLoader extends AsyncTaskLoader<ContentLoader.IntellitalkCont
         InputStream input = null;
         OutputStream output = null;
         HttpURLConnection connection = null;
+        boolean downloadFailed = false;
         try {
             URL url = new URL(dataTemplateUrl);
             connection = (HttpURLConnection) url.openConnection();
@@ -146,8 +151,8 @@ public class ContentLoader extends AsyncTaskLoader<ContentLoader.IntellitalkCont
             // expect HTTP 200 OK, so we don't mistakenly save error report
             // instead of the file
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                throw Throwables.propagate(new IOException("Server returned HTTP " + connection.getResponseCode()
-                        + " " + connection.getResponseMessage()));
+                throw new IOException("Server returned HTTP " + connection.getResponseCode()
+                        + " " + connection.getResponseMessage());
             }
 
             // download the file
@@ -163,8 +168,18 @@ public class ContentLoader extends AsyncTaskLoader<ContentLoader.IntellitalkCont
                 }
                 output.write(data, 0, count);
             }
-        } catch (Exception e) {
-            throw Throwables.propagate(e);
+        } catch (final Exception e) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getContext(), "Download failed!\nFalling back to local backup if it exists", Toast.LENGTH_LONG).show();
+                }
+            });
+            try {
+                Files.copy(new File(this.getContext().getFilesDir(), "data.json.backup"), dataFile);
+            } catch (IOException e1) {
+                throw Throwables.propagate(e1);
+            }
         } finally {
             try {
                 if (output != null)
